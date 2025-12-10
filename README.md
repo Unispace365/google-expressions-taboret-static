@@ -4,5 +4,5 @@ Erik Sterpa requested that we host the Google Taboret content for demo purposes,
 
 The process to update and deploy is:
 
-1. Go to https://unispace365.github.io/google-expressions-taboret-static/ and sync the fork with the source repo
+1. Go to https://unispace365.github.io/google-expressions-taboret and sync the fork with the source repo
 2. Run the deploy action from this repo
