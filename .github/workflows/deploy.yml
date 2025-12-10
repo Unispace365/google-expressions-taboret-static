@@ -65,6 +65,8 @@ jobs:
               cp -R "$expr/dist" "dist/taboret-packages/$name/"
             fi
           done
+
+          sed -i 's|path = `/expressions\${path}`;|path = `${path}`;|' dist/js/index.js
           
           # -----------------------------
           # END OF COPY SECTION
