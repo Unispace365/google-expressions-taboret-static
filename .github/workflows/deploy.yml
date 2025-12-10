@@ -1,0 +1,91 @@
+name: Build & Deploy Google Expressions Taboret
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo B
+        uses: actions/checkout@v4
+
+      - name: Checkout Repo A
+        uses: actions/checkout@v4
+        with:
+          repository: Unispace365/google-expressions-taboret
+          path: repoA
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Use Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          cd repoA
+          npm install
+
+      - name: Install inner dependencies
+        run: |
+          cd repoA
+          npm run install:all
+
+      - name: Build project
+        run: |
+          cd repoA
+          npm run build:all
+
+      - name: Collect build outputs into dist folder
+        run: |
+          cd repoA
+          mkdir -p dist/taboret-packages
+
+          # -----------------------------
+          # COPY ALL DESIRED OUTPUT HERE
+          # -----------------------------
+
+          cp *.html dist/
+          cp -R assets dist/
+          cp -R css dist/
+          cp -R js dist/
+          for expr in taboret-packages/*; do
+            if [ -d "$expr" ] && [ "$(basename "$expr")" != "shared" ]; then
+              name=$(basename "$expr")
+              mkdir -p "dist/taboret-packages/$name"
+              cp -R "$expr/dist" "dist/taboret-packages/$name/"
+            fi
+          done
+          
+          # -----------------------------
+          # END OF COPY SECTION
+          # -----------------------------
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload built site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: repoA/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
