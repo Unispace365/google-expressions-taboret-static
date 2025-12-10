@@ -45,6 +45,31 @@ jobs:
           cd repoA
           npm run build:all
 
+      - name: Collect build outputs into dist folder
+        run: |
+          cd repoA
+          mkdir -p dist/taboret-packages
+
+          # -----------------------------
+          # COPY ALL DESIRED OUTPUT HERE
+          # -----------------------------
+
+          cp *.html dist/
+          cp -R assets/* dist/
+          cp -R css/* dist/
+          cp -R js/* dist/
+          for expr in taboret-packages/*; do
+            if [ -d "$expr" ] && [ "$(basename "$expr")" != "shared" ]; then
+              name=$(basename "$expr")
+              mkdir -p "dist/taboret-packages/$name"
+              cp -R "$expr/dist" "dist/taboret-packages/$name/"
+            fi
+          done
+          
+          # -----------------------------
+          # END OF COPY SECTION
+          # -----------------------------
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
 
