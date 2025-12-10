@@ -23,8 +23,7 @@ jobs:
         with:
           repository: Unispace365/google-expressions-taboret
           path: repoA
-          # Remove this line if Repo A is public
-          ssh-key: ${{ secrets.REPO_A_DEPLOY_KEY }}
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
 
       - name: Use Node 20
         uses: actions/setup-node@v4
