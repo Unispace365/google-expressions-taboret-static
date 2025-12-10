@@ -58,6 +58,8 @@ jobs:
           cp -R assets dist/
           cp -R css dist/
           cp -R js dist/
+          cp -R node_modules dist/
+          
           for expr in taboret-packages/*; do
             if [ -d "$expr" ] && [ "$(basename "$expr")" != "shared" ]; then
               name=$(basename "$expr")
